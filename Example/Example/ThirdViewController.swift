@@ -13,8 +13,6 @@ class ThirdViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     private var numbers: [Int] = []
     
-    private var selectedIndexPath: NSIndexPath?
-    private var panGesture: UIPanGestureRecognizer!
     private var longPressGesture: UILongPressGestureRecognizer!
     
     override func viewDidLoad() {
@@ -25,33 +23,19 @@ class ThirdViewController: UIViewController {
             numbers.append(height)
         }
         
-        panGesture = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
-        self.collectionView.addGestureRecognizer(panGesture)
-        panGesture.delegate = self
-        
         longPressGesture = UILongPressGestureRecognizer(target: self, action: "handleLongGesture:")
         self.collectionView.addGestureRecognizer(longPressGesture)
-        longPressGesture.delegate = self
     }
     
     func handleLongGesture(gesture: UILongPressGestureRecognizer) {
         
         switch(gesture.state) {
-        case UIGestureRecognizerState.Began:
-            selectedIndexPath = self.collectionView.indexPathForItemAtPoint(gesture.locationInView(self.collectionView))
-        case UIGestureRecognizerState.Changed:
-            break
-        default:
-            selectedIndexPath = nil
-        }
-    }
-    
-    func handlePanGesture(gesture: UIPanGestureRecognizer) {
-        
-        switch(gesture.state) {
             
         case UIGestureRecognizerState.Began:
-            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath!)
+            guard let selectedIndexPath = self.collectionView.indexPathForItemAtPoint(gesture.locationInView(self.collectionView)) else {
+                break
+            }
+            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath)
         case UIGestureRecognizerState.Changed:
             collectionView.updateInteractiveMovementTargetPosition(gesture.locationInView(gesture.view!))
         case UIGestureRecognizerState.Ended:
@@ -68,31 +52,6 @@ extension ThirdViewController: CHTCollectionViewDelegateWaterfallLayout {
     func collectionView (collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         return CGSize(width: Int((view.bounds.width - 40)/3), height: numbers[indexPath.item])
-    }
-}
-
-extension ThirdViewController: UIGestureRecognizerDelegate {
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        
-        if gestureRecognizer == longPressGesture {
-            return panGesture == otherGestureRecognizer
-        }
-        
-        if gestureRecognizer == panGesture {
-            return longPressGesture == otherGestureRecognizer
-        }
-        
-        return true
-    }
-    
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-        
-        guard gestureRecognizer == self.panGesture else {
-            return true
-        }
-        
-        return selectedIndexPath != nil
     }
 }
 
