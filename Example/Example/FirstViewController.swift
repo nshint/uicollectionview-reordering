@@ -23,10 +23,6 @@ class FirstViewController: UICollectionViewController {
         self.installsStandardGestureForInteractiveMovement = true
     }
     
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numbers.count
     }
