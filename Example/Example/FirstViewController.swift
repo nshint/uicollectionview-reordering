@@ -19,8 +19,6 @@ class FirstViewController: UICollectionViewController {
         for i in 0...100 {
             numbers.append(i)
         }
-        
-        self.installsStandardGestureForInteractiveMovement = true
     }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
