@@ -107,9 +107,8 @@ extension SecondViewController: UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         
-        let temp = numbers[sourceIndexPath.item]
-        numbers[sourceIndexPath.item] = numbers[destinationIndexPath.item]
-        numbers[destinationIndexPath.item] = temp
+        let temp = numbers.removeAtIndex(sourceIndexPath.item)
+        numbers.insert(temp, atIndex: destinationIndexPath.item)
     }
     
 }
