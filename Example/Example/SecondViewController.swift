@@ -101,10 +101,6 @@ extension SecondViewController: UICollectionViewDataSource {
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, canMoveItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
     func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         
         let temp = numbers.removeAtIndex(sourceIndexPath.item)
