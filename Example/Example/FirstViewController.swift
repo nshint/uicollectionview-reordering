@@ -19,14 +19,8 @@ class FirstViewController: UICollectionViewController {
         for i in 0...100 {
             numbers.append(i)
         }
-        
-        self.installsStandardGestureForInteractiveMovement = true
     }
     
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numbers.count
     }
@@ -39,15 +33,10 @@ class FirstViewController: UICollectionViewController {
         return cell
     }
     
-    override func collectionView(collectionView: UICollectionView, canMoveItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
     override func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         
-        let temp = numbers[sourceIndexPath.item]
-        numbers[sourceIndexPath.item] = numbers[destinationIndexPath.item]
-        numbers[destinationIndexPath.item] = temp
+        let temp = numbers.removeAtIndex(sourceIndexPath.item)
+        numbers.insert(temp, atIndex: destinationIndexPath.item)
     }
 }
 
