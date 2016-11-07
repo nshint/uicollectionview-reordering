@@ -327,7 +327,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 break
             }
         }
-        for var i = self.unionRects.count - 1; i>=0; i -= 1 {
+        for i in (0 ..< self.unionRects.count).reversed() {
             if rect.intersects((self.unionRects.object(at: i) as AnyObject).cgRectValue){
                 end = min((i+1)*unionSize,self.allItemAttributes.count)
                 break
