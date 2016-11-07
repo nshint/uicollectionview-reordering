@@ -11,9 +11,9 @@ import UIKit
 class SecondViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    private var numbers: [Int] = []
+    fileprivate var numbers: [Int] = []
     
-    private var longPressGesture: UILongPressGestureRecognizer!
+    fileprivate var longPressGesture: UILongPressGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,22 +22,22 @@ class SecondViewController: UIViewController {
             numbers.append(i)
         }
         
-        longPressGesture = UILongPressGestureRecognizer(target: self, action: "handleLongGesture:")
+        longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SecondViewController.handleLongGesture(_:)))
         self.collectionView.addGestureRecognizer(longPressGesture)
     }
     
-    func handleLongGesture(gesture: UILongPressGestureRecognizer) {
+    func handleLongGesture(_ gesture: UILongPressGestureRecognizer) {
         
         switch(gesture.state) {
             
-        case UIGestureRecognizerState.Began:
-            guard let selectedIndexPath = self.collectionView.indexPathForItemAtPoint(gesture.locationInView(self.collectionView)) else {
+        case UIGestureRecognizerState.began:
+            guard let selectedIndexPath = self.collectionView.indexPathForItem(at: gesture.location(in: self.collectionView)) else {
                 break
             }
-            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath)
-        case UIGestureRecognizerState.Changed:
-            collectionView.updateInteractiveMovementTargetPosition(gesture.locationInView(gesture.view!))
-        case UIGestureRecognizerState.Ended:
+            collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+        case UIGestureRecognizerState.changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+        case UIGestureRecognizerState.ended:
             collectionView.endInteractiveMovement()
         default:
             collectionView.cancelInteractiveMovement()
@@ -48,22 +48,22 @@ class SecondViewController: UIViewController {
 
 extension SecondViewController: UICollectionViewDataSource {
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numbers.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! TextCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! TextCollectionViewCell
         cell.textLabel.text = "\(numbers[indexPath.item])"
         
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         
-        let temp = numbers.removeAtIndex(sourceIndexPath.item)
-        numbers.insert(temp, atIndex: destinationIndexPath.item)
+        let temp = numbers.remove(at: sourceIndexPath.item)
+        numbers.insert(temp, at: destinationIndexPath.item)
     }
     
 }
