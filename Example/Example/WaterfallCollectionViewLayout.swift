@@ -182,7 +182,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         var top : CGFloat = 0.0
         var attributes = UICollectionViewLayoutAttributes()
         
-        for section in 0 ..< (numberOfSections + 1) {
+        for section in 0 ..< numberOfSections {
             /*
             * 1. Get section-specific metrics (minimumInteritemSpacing, sectionInset)
             */
@@ -359,15 +359,15 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     */
     func shortestColumnIndex () -> NSInteger {
         var index = 0
-        var shorestHeight = MAXFLOAT
+        var shortestHeight = CGFloat.greatestFiniteMagnitude
         
-        self.columnHeights.enumerateObjects({(object : AnyObject!, idx : NSInteger,pointer :UnsafeMutablePointer<ObjCBool>) in
-            let height = object.floatValue
-            if (height<shorestHeight){
-                shorestHeight = height!
+        self.columnHeights.enumerateObjects({(object : Any, idx : Int, pointer : UnsafeMutablePointer<ObjCBool>) in
+            let heigth = object as! CGFloat
+            if (heigth < shortestHeight){
+                shortestHeight = heigth
                 index = idx
             }
-        } as! (Any, Int, UnsafeMutablePointer<ObjCBool>) -> Void)
+        })
         return index
     }
     
@@ -381,13 +381,13 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         var index = 0
         var longestHeight:CGFloat = 0.0
         
-        self.columnHeights.enumerateObjects({(object : AnyObject!, idx : NSInteger,pointer :UnsafeMutablePointer<ObjCBool>) in
-            let height = CGFloat(object.floatValue)
+        self.columnHeights.enumerateObjects({(object : Any, idx : Int ,pointer :UnsafeMutablePointer<ObjCBool>) in
+            let height = object as! CGFloat
             if (height > longestHeight){
                 longestHeight = height
                 index = idx
             }
-        } as! (Any, Int, UnsafeMutablePointer<ObjCBool>) -> Void)
+        })
         return index
     }
     
