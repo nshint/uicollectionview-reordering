@@ -182,7 +182,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         var top : CGFloat = 0.0
         var attributes = UICollectionViewLayoutAttributes()
         
-        for section in 0 ..< numberOfSections += 1{
+        for section in 0 ..< (numberOfSections + 1) {
             /*
             * 1. Get section-specific metrics (minimumInteritemSpacing, sectionInset)
             */
