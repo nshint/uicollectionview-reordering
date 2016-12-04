@@ -11,9 +11,9 @@ import UIKit
 class ThirdViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    private var numbers: [Int] = []
+    fileprivate var numbers: [Int] = []
     
-    private var longPressGesture: UILongPressGestureRecognizer!
+    fileprivate var longPressGesture: UILongPressGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,22 +23,22 @@ class ThirdViewController: UIViewController {
             numbers.append(height)
         }
         
-        longPressGesture = UILongPressGestureRecognizer(target: self, action: "handleLongGesture:")
+        longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(ThirdViewController.handleLongGesture(_:)))
         self.collectionView.addGestureRecognizer(longPressGesture)
     }
     
-    func handleLongGesture(gesture: UILongPressGestureRecognizer) {
+    func handleLongGesture(_ gesture: UILongPressGestureRecognizer) {
         
         switch(gesture.state) {
             
-        case UIGestureRecognizerState.Began:
-            guard let selectedIndexPath = self.collectionView.indexPathForItemAtPoint(gesture.locationInView(self.collectionView)) else {
+        case UIGestureRecognizerState.began:
+            guard let selectedIndexPath = self.collectionView.indexPathForItem(at: gesture.location(in: self.collectionView)) else {
                 break
             }
-            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath)
-        case UIGestureRecognizerState.Changed:
-            collectionView.updateInteractiveMovementTargetPosition(gesture.locationInView(gesture.view!))
-        case UIGestureRecognizerState.Ended:
+            collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+        case UIGestureRecognizerState.changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+        case UIGestureRecognizerState.ended:
             collectionView.endInteractiveMovement()
         default:
             collectionView.cancelInteractiveMovement()
@@ -49,30 +49,30 @@ class ThirdViewController: UIViewController {
 
 extension ThirdViewController: CHTCollectionViewDelegateWaterfallLayout {
     
-    func collectionView (collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView (_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
         return CGSize(width: Int((view.bounds.width - 40)/3), height: numbers[indexPath.item])
     }
 }
 
 extension ThirdViewController: UICollectionViewDataSource {
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numbers.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! TextCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! TextCollectionViewCell
         cell.textLabel.text = "\(numbers[indexPath.item])"
         
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         
-        let temp = numbers.removeAtIndex(sourceIndexPath.item)
-        numbers.insert(temp, atIndex: destinationIndexPath.item)
+        let temp = numbers.remove(at: sourceIndexPath.item)
+        numbers.insert(temp, at: destinationIndexPath.item)
     }
     
 }
@@ -80,11 +80,11 @@ extension ThirdViewController: UICollectionViewDataSource {
 //MARK: one little trick
 extension CHTCollectionViewWaterfallLayout {
     
-    internal override func invalidationContextForInteractivelyMovingItems(targetIndexPaths: [NSIndexPath], withTargetPosition targetPosition: CGPoint, previousIndexPaths: [NSIndexPath], previousPosition: CGPoint) -> UICollectionViewLayoutInvalidationContext {
+    internal override func invalidationContext(forInteractivelyMovingItems targetIndexPaths: [IndexPath], withTargetPosition targetPosition: CGPoint, previousIndexPaths: [IndexPath], previousPosition: CGPoint) -> UICollectionViewLayoutInvalidationContext {
         
-        let context = super.invalidationContextForInteractivelyMovingItems(targetIndexPaths, withTargetPosition: targetPosition, previousIndexPaths: previousIndexPaths, previousPosition: previousPosition)
+        let context = super.invalidationContext(forInteractivelyMovingItems: targetIndexPaths, withTargetPosition: targetPosition, previousIndexPaths: previousIndexPaths, previousPosition: previousPosition)
         
-        self.delegate?.collectionView!(self.collectionView!, moveItemAtIndexPath: previousIndexPaths[0], toIndexPath: targetIndexPaths[0])
+        self.delegate?.collectionView!(self.collectionView!, moveItemAt: previousIndexPaths[0], to: targetIndexPaths[0])
         
         return context
     }
