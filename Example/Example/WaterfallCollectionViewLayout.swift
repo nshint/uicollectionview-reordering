@@ -104,7 +104,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
             return self.collectionView!.delegate as? CHTCollectionViewDelegateWaterfallLayout
         }
     }
-    var columnHeights : NSMutableArray
+    var columnHeights = [CGFloat]()
     var sectionItemAttributes : NSMutableArray
     var allItemAttributes : NSMutableArray
     var headersAttributes : NSMutableDictionary
@@ -125,7 +125,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         headersAttributes = NSMutableDictionary()
         footersAttributes = NSMutableDictionary()
         unionRects = NSMutableArray()
-        columnHeights = NSMutableArray()
         allItemAttributes = NSMutableArray()
         sectionItemAttributes = NSMutableArray()
         
@@ -145,7 +144,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         headersAttributes = NSMutableDictionary()
         footersAttributes = NSMutableDictionary()
         unionRects = NSMutableArray()
-        columnHeights = NSMutableArray()
         allItemAttributes = NSMutableArray()
         sectionItemAttributes = NSMutableArray()
         
@@ -169,16 +167,9 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         self.headersAttributes.removeAllObjects()
         self.footersAttributes.removeAllObjects()
         self.unionRects.removeAllObjects()
-        self.columnHeights.removeAllObjects()
         self.allItemAttributes.removeAllObjects()
         self.sectionItemAttributes.removeAllObjects()
-        
-        var idx = 0
-        while idx<self.columnCount{
-            self.columnHeights.add(0)
-            idx += 1
-        }
-        
+
         var top : CGFloat = 0.0
         var attributes = UICollectionViewLayoutAttributes()
         
@@ -216,9 +207,8 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 top = attributes.frame.maxY
             }
             top += sectionInset.top
-            for idx in 0 ..< self.columnCount {
-                self.columnHeights[idx]=top;
-            }
+
+            self.columnHeights = [CGFloat](repeating: top, count: self.columnCount)
             
             /*
             * 3. Section items
@@ -232,7 +222,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 
                 let columnIndex = self.nextColumnIndexForItem(idx)
                 let xOffset = sectionInset.left + (itemWidth + self.minimumColumnSpacing) * CGFloat(columnIndex)
-                let yOffset = (self.columnHeights.object(at: columnIndex) as AnyObject).doubleValue!
+                let yOffset = self.columnHeights[columnIndex]
                 let itemSize = self.delegate?.collectionView(self.collectionView!, layout: self, sizeForItemAtIndexPath: indexPath)
                 var itemHeight : CGFloat = 0.0
                 if itemSize?.height > 0 && itemSize?.width > 0 {
@@ -252,7 +242,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
             */
             var footerHeight : CGFloat = 0.0
             let columnIndex  = self.longestColumnIndex()
-            top = CGFloat((self.columnHeights.object(at: columnIndex) as AnyObject).floatValue) - minimumInteritemSpacing + sectionInset.bottom
+            top = self.columnHeights[columnIndex] - minimumInteritemSpacing + sectionInset.bottom
             
             if let height = self.delegate?.collectionView?(self.collectionView!, layout: self, heightForFooterInSection: section){
                 footerHeight = height
@@ -268,12 +258,9 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 top = attributes.frame.maxY
             }
             
-            for idx in 0 ..< self.columnCount {
-                self.columnHeights[idx] = top
-            }
+            self.columnHeights = [CGFloat](repeating:top, count: self.columnCount)
         }
-        
-        idx = 0;
+        var idx = 0;
         let itemCounts = self.allItemAttributes.count
         while(idx < itemCounts){
             let rect1 = (self.allItemAttributes.object(at: idx) as AnyObject).frame as CGRect
@@ -291,8 +278,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         }
         
         var contentSize = self.collectionView!.bounds.size as CGSize
-        let height = self.columnHeights.object(at: 0) as! NSNumber
-        contentSize.height = CGFloat(height.doubleValue)
+        contentSize.height = self.columnHeights[0]
         return  contentSize
     }
     
@@ -359,15 +345,14 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     */
     func shortestColumnIndex () -> NSInteger {
         var index = 0
-        var shortestHeight = CGFloat.greatestFiniteMagnitude
-        
-        self.columnHeights.enumerateObjects({(object : Any, idx : Int, pointer : UnsafeMutablePointer<ObjCBool>) in
-            let heigth = object as! CGFloat
-            if (heigth < shortestHeight){
-                shortestHeight = heigth
+        var shortestHeigth = CGFloat.greatestFiniteMagnitude
+
+        for (idx, heigth) in self.columnHeights.enumerated() {
+            if (heigth < shortestHeigth) {
+                shortestHeigth = heigth
                 index = idx
             }
-        })
+        }
         return index
     }
     
@@ -377,17 +362,16 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     *  @return index for the longest column
     */
     
-    func longestColumnIndex () -> NSInteger {
+    func longestColumnIndex() -> NSInteger {
         var index = 0
-        var longestHeight:CGFloat = 0.0
-        
-        self.columnHeights.enumerateObjects({(object : Any, idx : Int ,pointer :UnsafeMutablePointer<ObjCBool>) in
-            let height = object as! CGFloat
-            if (height > longestHeight){
-                longestHeight = height
+        var longestHeigth:CGFloat = 0.0
+
+        for (idx, heigth) in self.columnHeights.enumerated() {
+            if (heigth > longestHeigth) {
+                longestHeigth = heigth
                 index = idx
             }
-        })
+        }
         return index
     }
     
