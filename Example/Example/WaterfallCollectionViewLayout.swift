@@ -105,7 +105,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         }
     }
     var columnHeights = [CGFloat]()
-    var sectionItemAttributes : NSMutableArray
+    var sectionItemAttributes = [[UICollectionViewLayoutAttributes]]()
     var allItemAttributes : NSMutableArray
     var headersAttributes : NSMutableDictionary
     var footersAttributes : NSMutableDictionary
@@ -126,8 +126,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         footersAttributes = NSMutableDictionary()
         unionRects = NSMutableArray()
         allItemAttributes = NSMutableArray()
-        sectionItemAttributes = NSMutableArray()
-        
+
         super.init()
     }
     
@@ -145,8 +144,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         footersAttributes = NSMutableDictionary()
         unionRects = NSMutableArray()
         allItemAttributes = NSMutableArray()
-        sectionItemAttributes = NSMutableArray()
-        
+
         super.init(coder: aDecoder)
     }
     
@@ -168,7 +166,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         self.footersAttributes.removeAllObjects()
         self.unionRects.removeAllObjects()
         self.allItemAttributes.removeAllObjects()
-        self.sectionItemAttributes.removeAllObjects()
+        self.sectionItemAttributes.removeAll()
 
         var top : CGFloat = 0.0
         var attributes = UICollectionViewLayoutAttributes()
@@ -214,7 +212,8 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
             * 3. Section items
             */
             let itemCount = self.collectionView!.numberOfItems(inSection: section)
-            let itemAttributes = NSMutableArray(capacity: itemCount)
+            var itemAttributes = [UICollectionViewLayoutAttributes]()
+            itemAttributes.reserveCapacity(itemCount)
             
             // Item will be put into shortest column.
             for idx in 0 ..< itemCount {
@@ -231,11 +230,11 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 
                 attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
                 attributes.frame = CGRect(x: xOffset, y: CGFloat(yOffset), width: itemWidth, height: itemHeight)
-                itemAttributes.add(attributes)
+                itemAttributes.append(attributes)
                 self.allItemAttributes.add(attributes)
                 self.columnHeights[columnIndex]=attributes.frame.maxY + minimumInteritemSpacing;
             }
-            self.sectionItemAttributes.add(itemAttributes)
+            self.sectionItemAttributes.append(itemAttributes)
             
             /*
             * 4. Section footer
@@ -286,11 +285,11 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         if indexPath.section >= self.sectionItemAttributes.count{
             return nil
         }
-        if indexPath.item >= (self.sectionItemAttributes.object(at: indexPath.section) as AnyObject).count{
+        if indexPath.item >= self.sectionItemAttributes[indexPath.section].count {
             return nil;
         }
-        let list = self.sectionItemAttributes.object(at: indexPath.section) as! NSArray
-        return list.object(at: indexPath.item) as? UICollectionViewLayoutAttributes
+        let list = self.sectionItemAttributes[indexPath.section]
+        return list[indexPath.item]
     }
     
     override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes{
