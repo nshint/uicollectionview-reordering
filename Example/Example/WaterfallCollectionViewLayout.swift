@@ -8,29 +8,6 @@
 
 import Foundation
 import UIKit
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
 
 @objc protocol CHTCollectionViewDelegateWaterfallLayout: UICollectionViewDelegate, UICollectionViewDataSource {
     
@@ -189,10 +166,11 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 let columnIndex = self.nextColumnIndexForItem(idx)
                 let xOffset = sectionInset.left + (itemWidth + self.minimumColumnSpacing) * CGFloat(columnIndex)
                 let yOffset = self.columnHeights[columnIndex]
-                let itemSize = self.delegate?.collectionView(self.collectionView!, layout: self, sizeForItemAtIndexPath: indexPath)
+                let itemSize = self.delegate?.collectionView(self.collectionView!, layout: self, sizeForItemAtIndexPath: indexPath) ?? CGSize.zero
                 var itemHeight : CGFloat = 0.0
-                if itemSize?.height > 0 && itemSize?.width > 0 {
-                    itemHeight = floor(itemSize!.height*itemWidth/itemSize!.width)
+
+                if itemSize.height > 0 && itemSize.width > 0 {
+                    itemHeight = floor(itemSize.height * itemWidth / itemSize.width)
                 }
                 
                 attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
