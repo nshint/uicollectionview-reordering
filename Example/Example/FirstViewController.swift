@@ -11,15 +11,7 @@ import UIKit
 
 class FirstViewController: UICollectionViewController {
 
-    var numbers: [Int] = []
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        for i in 0...100 {
-            numbers.append(i)
-        }
-    }
+    var numbers = [Int](0...100)
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return numbers.count

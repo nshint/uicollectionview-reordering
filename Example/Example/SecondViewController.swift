@@ -11,16 +11,12 @@ import UIKit
 class SecondViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    fileprivate var numbers: [Int] = []
-    
+    var numbers = [Int](0...100)
+
     fileprivate var longPressGesture: UILongPressGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        for i in 0...100 {
-            numbers.append(i)
-        }
         
         longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SecondViewController.handleLongGesture(_:)))
         self.collectionView.addGestureRecognizer(longPressGesture)
