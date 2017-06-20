@@ -32,7 +32,6 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   }
 }
 
-
 @objc protocol CHTCollectionViewDelegateWaterfallLayout: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView (_ collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout,
@@ -52,9 +51,7 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 }
 
 enum CHTCollectionViewWaterfallLayoutItemRenderDirection : NSInteger{
-    case chtCollectionViewWaterfallLayoutItemRenderDirectionShortestFirst
-    case chtCollectionViewWaterfallLayoutItemRenderDirectionLeftToRight
-    case chtCollectionViewWaterfallLayoutItemRenderDirectionRightToLeft
+    case shortestFirst, leftToRight, rightToLeft
 }
 
 class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
@@ -90,14 +87,12 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         didSet{
             invalidateLayout()
         }}
-    
-    
-    var itemRenderDirection : CHTCollectionViewWaterfallLayoutItemRenderDirection = .chtCollectionViewWaterfallLayoutItemRenderDirectionShortestFirst{
+
+    var itemRenderDirection : CHTCollectionViewWaterfallLayoutItemRenderDirection = .shortestFirst {
         didSet{
             invalidateLayout()
         }}
-    
-    
+
     //    private property and method above.
     weak var delegate : CHTCollectionViewDelegateWaterfallLayout?{
         get{
@@ -332,7 +327,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     *
     *  @return index for the longest column
     */
-    
     func longestColumnIndex() -> NSInteger {
         var index = 0
         var longestHeigth:CGFloat = 0.0
@@ -354,11 +348,11 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     func nextColumnIndexForItem (_ item : NSInteger) -> Int {
         var index = 0
         switch (self.itemRenderDirection){
-        case .chtCollectionViewWaterfallLayoutItemRenderDirectionShortestFirst :
+        case .shortestFirst:
             index = self.shortestColumnIndex()
-        case .chtCollectionViewWaterfallLayoutItemRenderDirectionLeftToRight :
+        case .leftToRight:
             index = (item%self.columnCount)
-        case .chtCollectionViewWaterfallLayoutItemRenderDirectionRightToLeft:
+        case .rightToLeft:
             index = (self.columnCount - 1) - (item % self.columnCount);
         }
         
