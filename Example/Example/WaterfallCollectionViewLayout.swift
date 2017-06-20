@@ -107,8 +107,8 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     var columnHeights = [CGFloat]()
     var sectionItemAttributes = [[UICollectionViewLayoutAttributes]]()
     var allItemAttributes = [UICollectionViewLayoutAttributes]()
-    var headersAttributes : NSMutableDictionary
-    var footersAttributes : NSMutableDictionary
+    var headersAttributes = [UICollectionViewLayoutAttributes]()
+    var footersAttributes = [UICollectionViewLayoutAttributes]()
     var unionRects = [CGRect]()
     let unionSize = 20
     
@@ -121,9 +121,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         self.sectionInset = UIEdgeInsets.zero
         self.itemRenderDirection =
             CHTCollectionViewWaterfallLayoutItemRenderDirection.chtCollectionViewWaterfallLayoutItemRenderDirectionShortestFirst
-        
-        headersAttributes = NSMutableDictionary()
-        footersAttributes = NSMutableDictionary()
 
         super.init()
     }
@@ -137,9 +134,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         self.sectionInset = UIEdgeInsets.zero
         self.itemRenderDirection =
             CHTCollectionViewWaterfallLayoutItemRenderDirection.chtCollectionViewWaterfallLayoutItemRenderDirectionShortestFirst
-        
-        headersAttributes = NSMutableDictionary()
-        footersAttributes = NSMutableDictionary()
 
         super.init(coder: aDecoder)
     }
@@ -158,8 +152,8 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
             return
         }
         
-        self.headersAttributes.removeAllObjects()
-        self.footersAttributes.removeAllObjects()
+        self.headersAttributes.removeAll()
+        self.footersAttributes.removeAll()
         self.unionRects.removeAll()
         self.allItemAttributes.removeAll()
         self.sectionItemAttributes.removeAll()
@@ -195,7 +189,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
             if heightHeader > 0 {
                 attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: CHTCollectionElementKindSectionHeader, with: IndexPath(row: 0, section: section))
                 attributes.frame = CGRect(x: 0, y: top, width: self.collectionView!.bounds.size.width, height: heightHeader)
-                self.headersAttributes.setObject(attributes, forKey: (section as NSCopying))
+                self.headersAttributes[section] = attributes
                 self.allItemAttributes.append(attributes)
                 
                 top = attributes.frame.maxY
@@ -248,7 +242,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
             if footerHeight > 0 {
                 attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: CHTCollectionElementKindSectionFooter, with: IndexPath(item: 0, section: section))
                 attributes.frame = CGRect(x: 0, y: top, width: self.collectionView!.bounds.size.width, height: footerHeight)
-                self.footersAttributes.setObject(attributes, forKey: section as NSCopying)
+                self.footersAttributes.append(attributes)
                 self.allItemAttributes.append(attributes)
                 top = attributes.frame.maxY
             }
@@ -291,9 +285,9 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes{
         var attribute = UICollectionViewLayoutAttributes()
         if elementKind == CHTCollectionElementKindSectionHeader{
-            attribute = self.headersAttributes.object(forKey: indexPath.section) as! UICollectionViewLayoutAttributes
+            attribute = self.headersAttributes[indexPath.section]
         }else if elementKind == CHTCollectionElementKindSectionFooter{
-            attribute = self.footersAttributes.object(forKey: indexPath.section) as! UICollectionViewLayoutAttributes
+            attribute = self.footersAttributes[indexPath.section]
         }
         return attribute
     }
