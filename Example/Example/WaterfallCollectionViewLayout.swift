@@ -61,38 +61,38 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     let CHTCollectionElementKindSectionHeader = "CHTCollectionElementKindSectionHeader"
     let CHTCollectionElementKindSectionFooter = "CHTCollectionElementKindSectionFooter"
     
-    var columnCount : NSInteger{
+    var columnCount : NSInteger = 2 {
         didSet{
             invalidateLayout()
         }}
     
-    var minimumColumnSpacing : CGFloat{
+    var minimumColumnSpacing : CGFloat = 10.0 {
         didSet{
             invalidateLayout()
         }}
     
-    var minimumInteritemSpacing : CGFloat{
+    var minimumInteritemSpacing : CGFloat = 10.0 {
         didSet{
             invalidateLayout()
         }}
     
-    var headerHeight : CGFloat{
+    var headerHeight : CGFloat = 0.0 {
         didSet{
             invalidateLayout()
         }}
     
-    var footerHeight : CGFloat{
+    var footerHeight : CGFloat = 0.0 {
         didSet{
             invalidateLayout()
         }}
     
-    var sectionInset : UIEdgeInsets{
+    var sectionInset : UIEdgeInsets = UIEdgeInsets.zero {
         didSet{
             invalidateLayout()
         }}
     
     
-    var itemRenderDirection : CHTCollectionViewWaterfallLayoutItemRenderDirection{
+    var itemRenderDirection : CHTCollectionViewWaterfallLayoutItemRenderDirection = .chtCollectionViewWaterfallLayoutItemRenderDirectionShortestFirst{
         didSet{
             invalidateLayout()
         }}
@@ -113,28 +113,10 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     let unionSize = 20
     
     override init(){
-        self.headerHeight = 0.0
-        self.footerHeight = 0.0
-        self.columnCount = 2
-        self.minimumInteritemSpacing = 10
-        self.minimumColumnSpacing = 10
-        self.sectionInset = UIEdgeInsets.zero
-        self.itemRenderDirection =
-            CHTCollectionViewWaterfallLayoutItemRenderDirection.chtCollectionViewWaterfallLayoutItemRenderDirectionShortestFirst
-
         super.init()
     }
     
     required init?(coder aDecoder: NSCoder) {
-        self.headerHeight = 0.0
-        self.footerHeight = 0.0
-        self.columnCount = 2
-        self.minimumInteritemSpacing = 10
-        self.minimumColumnSpacing = 10
-        self.sectionInset = UIEdgeInsets.zero
-        self.itemRenderDirection =
-            CHTCollectionViewWaterfallLayoutItemRenderDirection.chtCollectionViewWaterfallLayoutItemRenderDirectionShortestFirst
-
         super.init(coder: aDecoder)
     }
     
