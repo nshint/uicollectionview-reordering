@@ -109,7 +109,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     var allItemAttributes = [UICollectionViewLayoutAttributes]()
     var headersAttributes : NSMutableDictionary
     var footersAttributes : NSMutableDictionary
-    var unionRects : NSMutableArray
+    var unionRects = [CGRect]()
     let unionSize = 20
     
     override init(){
@@ -124,7 +124,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         
         headersAttributes = NSMutableDictionary()
         footersAttributes = NSMutableDictionary()
-        unionRects = NSMutableArray()
 
         super.init()
     }
@@ -141,7 +140,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         
         headersAttributes = NSMutableDictionary()
         footersAttributes = NSMutableDictionary()
-        unionRects = NSMutableArray()
 
         super.init(coder: aDecoder)
     }
@@ -162,7 +160,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         
         self.headersAttributes.removeAllObjects()
         self.footersAttributes.removeAllObjects()
-        self.unionRects.removeAllObjects()
+        self.unionRects.removeAll()
         self.allItemAttributes.removeAll()
         self.sectionItemAttributes.removeAll()
 
@@ -263,7 +261,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
             let rect1 = self.allItemAttributes[idx].frame
             idx = min(idx + unionSize, itemCounts) - 1
             let rect2 = self.allItemAttributes[idx].frame
-            self.unionRects.add(NSValue(cgRect:rect1.union(rect2)))
+            self.unionRects.append(rect1.union(rect2))
             idx += 1
         }
     }
@@ -305,13 +303,13 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         let attrs = NSMutableArray()
         
         for i in 0 ..< end {
-            if rect.intersects((self.unionRects.object(at: i) as AnyObject).cgRectValue){
+            if rect.intersects(self.unionRects[i]) {
                 begin = i * unionSize;
                 break
             }
         }
         for i in (0 ..< self.unionRects.count).reversed() {
-            if rect.intersects((self.unionRects.object(at: i) as AnyObject).cgRectValue){
+            if rect.intersects(self.unionRects[i]) {
                 end = min((i+1)*unionSize,self.allItemAttributes.count)
                 break
             }
