@@ -106,7 +106,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
     }
     var columnHeights = [CGFloat]()
     var sectionItemAttributes = [[UICollectionViewLayoutAttributes]]()
-    var allItemAttributes : NSMutableArray
+    var allItemAttributes = [UICollectionViewLayoutAttributes]()
     var headersAttributes : NSMutableDictionary
     var footersAttributes : NSMutableDictionary
     var unionRects : NSMutableArray
@@ -125,7 +125,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         headersAttributes = NSMutableDictionary()
         footersAttributes = NSMutableDictionary()
         unionRects = NSMutableArray()
-        allItemAttributes = NSMutableArray()
 
         super.init()
     }
@@ -143,7 +142,6 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         headersAttributes = NSMutableDictionary()
         footersAttributes = NSMutableDictionary()
         unionRects = NSMutableArray()
-        allItemAttributes = NSMutableArray()
 
         super.init(coder: aDecoder)
     }
@@ -165,7 +163,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         self.headersAttributes.removeAllObjects()
         self.footersAttributes.removeAllObjects()
         self.unionRects.removeAllObjects()
-        self.allItemAttributes.removeAllObjects()
+        self.allItemAttributes.removeAll()
         self.sectionItemAttributes.removeAll()
 
         var top : CGFloat = 0.0
@@ -200,7 +198,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: CHTCollectionElementKindSectionHeader, with: IndexPath(row: 0, section: section))
                 attributes.frame = CGRect(x: 0, y: top, width: self.collectionView!.bounds.size.width, height: heightHeader)
                 self.headersAttributes.setObject(attributes, forKey: (section as NSCopying))
-                self.allItemAttributes.add(attributes)
+                self.allItemAttributes.append(attributes)
                 
                 top = attributes.frame.maxY
             }
@@ -231,7 +229,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
                 attributes.frame = CGRect(x: xOffset, y: CGFloat(yOffset), width: itemWidth, height: itemHeight)
                 itemAttributes.append(attributes)
-                self.allItemAttributes.add(attributes)
+                self.allItemAttributes.append(attributes)
                 self.columnHeights[columnIndex]=attributes.frame.maxY + minimumInteritemSpacing;
             }
             self.sectionItemAttributes.append(itemAttributes)
@@ -253,7 +251,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
                 attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: CHTCollectionElementKindSectionFooter, with: IndexPath(item: 0, section: section))
                 attributes.frame = CGRect(x: 0, y: top, width: self.collectionView!.bounds.size.width, height: footerHeight)
                 self.footersAttributes.setObject(attributes, forKey: section as NSCopying)
-                self.allItemAttributes.add(attributes)
+                self.allItemAttributes.append(attributes)
                 top = attributes.frame.maxY
             }
             
@@ -262,9 +260,9 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
         var idx = 0;
         let itemCounts = self.allItemAttributes.count
         while(idx < itemCounts){
-            let rect1 = (self.allItemAttributes.object(at: idx) as AnyObject).frame as CGRect
+            let rect1 = self.allItemAttributes[idx].frame
             idx = min(idx + unionSize, itemCounts) - 1
-            let rect2 = (self.allItemAttributes.object(at: idx) as AnyObject).frame as CGRect
+            let rect2 = self.allItemAttributes[idx].frame
             self.unionRects.add(NSValue(cgRect:rect1.union(rect2)))
             idx += 1
         }
@@ -319,7 +317,7 @@ class CHTCollectionViewWaterfallLayout : UICollectionViewLayout{
             }
         }
         for i in begin ..< end {
-            let attr = self.allItemAttributes.object(at: i) as! UICollectionViewLayoutAttributes
+            let attr = self.allItemAttributes[i]
             if rect.intersects(attr.frame) {
                 attrs.add(attr)
             }
