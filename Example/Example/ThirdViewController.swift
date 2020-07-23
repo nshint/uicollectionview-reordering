@@ -27,7 +27,7 @@ class ThirdViewController: UIViewController {
         self.collectionView.addGestureRecognizer(longPressGesture)
     }
     
-    func handleLongGesture(_ gesture: UILongPressGestureRecognizer) {
+    @objc func handleLongGesture(_ gesture: UILongPressGestureRecognizer) {
         
         switch(gesture.state) {
             
