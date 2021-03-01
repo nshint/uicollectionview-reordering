@@ -15,7 +15,7 @@ jobs:
         xcode:
           - 11.5
           - 11.6
-          - 12
+          - 12.4
 
     steps:
     - uses: actions/checkout@master
